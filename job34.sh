@@ -14,13 +14,15 @@
 #SBATCH --tasks-per-node=1
 
 # Memory per node. 5 GB (In total, 10 GB)
-#SBATCH --mem=10g
+#SBATCH --mem=16g
 
 # Number of GPUs per node
 #SBATCH --gres=gpu:1
 
+#SBATCH --cpus-per-task=8
+
 # Select Intel nodes (with Infiniband)
-#SBATCH --constraint=intel
+#SBATCH --constraint=tesla
 
 # Modules
 module load CUDA
