@@ -38,9 +38,9 @@ dropout = 0.3
 mask_mode = 'binomial'
 exp = 'pretrain-varnam+bhairavi'
 pretrain_epochs = 100
-finetune_epochs = 300
-num_classes = 7
-catchup_epochs = 20
+finetune_epochs = 20
+num_classes = 8
+catchup_epochs = 3
 
 params = {
     'num_classes': num_classes,

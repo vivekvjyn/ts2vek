@@ -24,15 +24,15 @@ class Dataset:
 
         self.device = device
 
-        svaras = ['S', 'R', 'G', 'M', 'P', 'D', 'N', 'None']
+        svaras = ['S', 'R', 'G', 'M', 'P', 'D', 'N', 'x']
 
-        series_list = [x['curr'][0] for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'None']
+        series_list = [x['curr'][0] for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'x']
         X = prepare_data(series_list)
 
         self.x = torch.tensor(X, dtype=torch.float32)
 
-        self.targets = torch.tensor([svaras.index(x['curr'][1]) for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'None'], dtype=torch.int64)
-        self.modes = torch.tensor([0 for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'None'], dtype=torch.int64)
+        self.targets = torch.tensor([svaras.index(x['curr'][1]) for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'x'], dtype=torch.int64)
+        self.modes = torch.tensor([0 for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'x'], dtype=torch.int64)
 
 
     def __getitem__(self, architecture):

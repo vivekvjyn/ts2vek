@@ -38,9 +38,9 @@ dropout = 0.3
 mask_mode = 'binomial'
 exp = 'pretrain-varnam_finetune-bhairavi'
 pretrain_epochs = 100
-finetune_epochs = 300
-num_classes = 7
-catchup_epochs = 20
+finetune_epochs = 20
+num_classes = 8
+catchup_epochs = 3
 
 params = {
     'num_classes': num_classes,
@@ -56,7 +56,7 @@ params = {
     'train_path': 'dataset/train.pkl',
     'test_path': 'dataset/test.pkl',
     'lr': lr,
-    'pretrain_on': ['bhairavi'],
+    'pretrain_on': ['carnatic_varnam'],
     'finetune_on': ['bhairavi'],
     'pretrain_epochs': pretrain_epochs,
     'finetune_epochs': finetune_epochs,
