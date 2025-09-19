@@ -29,10 +29,10 @@ torch.backends.cudnn.benchmark = False
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 lr = 0.001
-batch_size = 256
+batch_size = 128
 input_dims = 2
-hidden_dims = 128
-output_dims = 64
+hidden_dims = 64
+output_dims = 32
 depth = 6
 dropout = 0.3
 mask_mode = 'binomial'
