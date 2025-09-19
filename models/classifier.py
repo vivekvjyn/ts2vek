@@ -59,23 +59,9 @@ class Classifier(nn.Module):
 
 
     def encode(self, x, mask=None, encoding_window="full_series"):
-        """
-        Encode input sequence into a fixed representation.
-
-        Args:
-            x (torch.Tensor): shape (N, T, F)
-            mask (str|None): mask type for encoder
-            encoding_window (str|int): 'full_series' (default), 'multiscale', or int
-
-        Returns:
-            torch.Tensor: shape (N, D) representations
-        """
-        # Pass through encoder -> (N, T, D)
         z = self.encoder(x, mask)
 
-        # Pooling over time dimension
         if encoding_window == "full_series":
-            # Global pooling -> (N, D)
             reprs = F.max_pool1d(
                 z.transpose(1, 2).contiguous(), kernel_size=z.size(1)
             ).squeeze(-1)
@@ -84,7 +70,6 @@ class Classifier(nn.Module):
                 z.transpose(1, 2).contiguous(), kernel_size=encoding_window, stride=1
             ).transpose(1, 2)
         else:
-            # Default to mean pooling
             reprs = z.mean(dim=1)
 
         return reprs

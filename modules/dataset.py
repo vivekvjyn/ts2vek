@@ -26,15 +26,13 @@ class Dataset:
 
         svaras = ['S', 'R', 'G', 'M', 'P', 'D', 'N', 'None']
 
-        series_list = [x['curr'][0] for x in dataset if x['dataset'] in filter and x['fold'] == mode]
+        series_list = [x['curr'][0] for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'None']
         X = prepare_data(series_list)
 
         self.x = torch.tensor(X, dtype=torch.float32)
 
-        self.targets = torch.tensor([svaras.index(x['curr'][1]) for x in dataset if x['dataset'] in filter and x['fold'] == mode], dtype=torch.int64)
-        self.modes = torch.tensor([0 for x in dataset if x['dataset'] in filter and x['fold'] == mode], dtype=torch.int64)
-
-        print(torch.unique(self.targets, return_counts=True))
+        self.targets = torch.tensor([svaras.index(x['curr'][1]) for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'None'], dtype=torch.int64)
+        self.modes = torch.tensor([0 for x in dataset if x['dataset'] in filter and x['fold'] == mode and x['curr'][1] != 'None'], dtype=torch.int64)
 
 
     def __getitem__(self, architecture):

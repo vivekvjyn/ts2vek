@@ -1,5 +1,5 @@
 '''
-Experiment 1: Pretrain on Carnatic Varnams, Finetune on Bhairavi
+Experiment 1: Pretrain on Carnatic Varnam, Bhairavi, CMR, Finetune on Bhairavi
 '''
 
 
@@ -36,7 +36,7 @@ output_dims = 32
 depth = 4
 dropout = 0.3
 mask_mode = 'binomial'
-exp = 'pretrain-varnam_finetune-bhairavi'
+exp = 'pretrain-varnam+bhairavi+cmr_finetune-bhairavi'
 pretrain_epochs = 100
 finetune_epochs = 300
 num_classes = 7
@@ -56,7 +56,7 @@ params = {
     'train_path': 'dataset/train.pkl',
     'test_path': 'dataset/test.pkl',
     'lr': lr,
-    'pretrain_on': ['bhairavi'],
+    'pretrain_on': ['carnatic_varnam', 'bhairavi', 'cmr'],
     'finetune_on': ['bhairavi'],
     'pretrain_epochs': pretrain_epochs,
     'finetune_epochs': finetune_epochs,
@@ -110,7 +110,6 @@ def pretrain():
         n_epochs=pretrain_epochs,
         verbose=True
     )
-
 
 
 def train():

@@ -1,3 +1,8 @@
+'''
+Experiment 2: Pretrain on Carnatic Varnam and Bhairavi, Finetune on Bhairavi
+'''
+
+
 import argparse
 import os
 import random
@@ -5,7 +10,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
-from sklearn.model_selection import train_test_split
 import pickle
 from ts2vec import TS2Vec
 import json
@@ -14,7 +18,6 @@ from models.classifier import Classifier
 from modules.dataset import Dataset
 from modules.logger import Logger
 from modules.trainer import Trainer
-from modules.tester import Tester
 
 random.seed(0)
 np.random.seed(0)
@@ -26,15 +29,15 @@ torch.backends.cudnn.benchmark = False
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 lr = 0.001
-batch_size = 64
+batch_size = 256
 input_dims = 2
 hidden_dims = 64
 output_dims = 32
-depth = 3
+depth = 4
 dropout = 0.3
 mask_mode = 'binomial'
 exp = 'pretrain-varnam+bhairavi_finetune-bhairavi'
-pretrain_epochs = 60
+pretrain_epochs = 100
 finetune_epochs = 300
 num_classes = 7
 catchup_epochs = 20
@@ -79,7 +82,6 @@ def main():
     pretrain()
 
     train()
-    #test()
 
 def pretrain():
     dataset_path = params['train_path']
@@ -87,10 +89,6 @@ def pretrain():
     with open(dataset_path, 'rb') as f:
         all_svaras = pickle.load(f)
 
-    #import ipdb; ipdb.set_trace()
-
-    #print(params['pretrain_on'])
-    #print([x['dataset'] for x in all_svaras])
     series_list = [x['curr'][0] for x in all_svaras if x['dataset'] in params['pretrain_on']]
 
     X = prepare_data(series_list)
@@ -106,26 +104,12 @@ def pretrain():
 
     print("Starting pretraining...")
 
-    patience = 10
-    min_loss = np.inf
-    for epoch in range(pretrain_epochs):
-        loss_log = model.fit(
-            X,
-            n_epochs=1,
-            verbose=True
-        )
-
-        if loss_log[-1] < min_loss:
-            min_loss = loss_log[-1]
-            print(f"Saving model at epoch {epoch} with loss {min_loss}")
-            os.makedirs("checkpoints/pretrained", exist_ok=True)
-            model.save(f"checkpoints/pretrained/{exp}.pth")
-            patience = 10
-        else:
-            patience -= 1
-            if patience == 0:
-                print("Early stopping")
-                break
+    loss_log = model.fit(
+        X,
+        name=exp,
+        n_epochs=pretrain_epochs,
+        verbose=True
+    )
 
 
 def train():

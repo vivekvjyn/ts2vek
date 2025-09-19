@@ -1,5 +1,5 @@
 '''
-Experiment 1: Pretrain on Carnatic Varnams, Finetune on Bhairavi
+Experiment 3: Pretrain on Carnatic Varnam, Bhairavi and CMR
 '''
 
 
@@ -36,7 +36,7 @@ output_dims = 32
 depth = 4
 dropout = 0.3
 mask_mode = 'binomial'
-exp = 'pretrain-varnam_finetune-bhairavi'
+exp = 'pretrain-varnam+bhairavi+cmr'
 pretrain_epochs = 100
 finetune_epochs = 300
 num_classes = 7
@@ -51,13 +51,13 @@ params = {
     'depth': depth,
     'dropout': dropout,
     'mask_mode': mask_mode,
-    'model_path': f'checkpoints/finetuned/{exp}.pth',
+    'model_path': f'checkpoints/pretrained/{exp}.pth',
     'input_dims': input_dims,
     'train_path': 'dataset/train.pkl',
     'test_path': 'dataset/test.pkl',
     'lr': lr,
-    'pretrain_on': ['bhairavi'],
-    'finetune_on': ['bhairavi'],
+    'pretrain_on': ['carnatic_varnam', 'bhairavi', 'cmr'],
+    'finetune_on': [],
     'pretrain_epochs': pretrain_epochs,
     'finetune_epochs': finetune_epochs,
     'catchup_epochs': catchup_epochs,
@@ -80,8 +80,6 @@ def prepare_data(series_list):
 
 def main():
     pretrain()
-
-    train()
 
 def pretrain():
     dataset_path = params['train_path']
@@ -110,7 +108,6 @@ def pretrain():
         n_epochs=pretrain_epochs,
         verbose=True
     )
-
 
 
 def train():

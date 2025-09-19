@@ -5,8 +5,8 @@ import numpy as np
 from models.encoder import TSEncoder
 from models.losses import hierarchical_contrastive_loss
 from utils import take_per_row, split_with_nan, centerize_vary_length_series, torch_pad_nan
-import math
 from tqdm import tqdm
+import os
 
 class TS2Vec:
     '''The TS2Vec model'''
@@ -58,7 +58,7 @@ class TS2Vec:
         self.n_epochs = 0
         self.n_iters = 0
 
-    def fit(self, train_data, n_epochs=None, n_iters=None, verbose=True):
+    def fit(self, train_data, name, n_epochs=None, n_iters=None, verbose=True):
         ''' Training the TS2Vec model.
 
         Args:
@@ -92,7 +92,8 @@ class TS2Vec:
         optimizer = torch.optim.AdamW(self._net.parameters(), lr=self.lr)
 
         loss_log = []
-
+        min_loss = np.inf
+        patience = 10
         while True:
             if n_epochs is not None and self.n_epochs >= n_epochs:
                 break
@@ -138,6 +139,7 @@ class TS2Vec:
                 optimizer.step()
                 self.net.update_parameters(self._net)
 
+
                 cum_loss += loss.item()
                 n_epoch_iters += 1
 
@@ -145,6 +147,18 @@ class TS2Vec:
 
                 if self.after_iter_callback is not None:
                     self.after_iter_callback(self, loss.item())
+
+            if cum_loss < min_loss:
+                min_loss = cum_loss
+                patience = 10
+                os.makedirs("checkpoints/pretrained", exist_ok=True)
+                self.save(f"checkpoints/pretrained/{name}.pth")
+                print(f"save model at epoch {self.n_epochs}, iter {self.n_iters}, loss {min_loss/n_epoch_iters}")
+            else:
+                patience -= 1
+                if patience == 0:
+                    interrupted = True
+                    break
 
             if interrupted:
                 break
