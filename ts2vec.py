@@ -58,7 +58,7 @@ class TS2Vec:
         self.n_epochs = 0
         self.n_iters = 0
 
-    def fit(self, train_data, name, n_epochs=None, n_iters=None, verbose=True):
+    def fit(self, train_data, name, logger, n_epochs=None, n_iters=None, verbose=True):
         ''' Training the TS2Vec model.
 
         Args:
@@ -102,7 +102,7 @@ class TS2Vec:
             n_epoch_iters = 0
 
             interrupted = False
-            for batch in tqdm(train_loader):
+            for batch in train_loader:
                 if n_iters is not None and self.n_iters >= n_iters:
                     interrupted = True
                     break
@@ -153,7 +153,7 @@ class TS2Vec:
                 patience = 10
                 os.makedirs("checkpoints/pretrained", exist_ok=True)
                 self.save(f"checkpoints/pretrained/{name}.pth")
-                print(f"save model at epoch {self.n_epochs}, iter {self.n_iters}, loss {min_loss/n_epoch_iters}")
+                logger(f"save model at epoch {self.n_epochs}, iter {self.n_iters}, loss {min_loss/n_epoch_iters}")
             else:
                 patience -= 1
                 if patience == 0:
@@ -166,7 +166,7 @@ class TS2Vec:
             cum_loss /= n_epoch_iters
             loss_log.append(cum_loss)
             if verbose:
-                print(f"Epoch #{self.n_epochs}: loss={cum_loss}")
+                logger(f"Epoch #{self.n_epochs}: loss={cum_loss}")
             self.n_epochs += 1
 
             if self.after_epoch_callback is not None:

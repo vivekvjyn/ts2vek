@@ -35,7 +35,6 @@ class Trainer:
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
         max_f1 = -np.inf
-        min_loss = np.inf
 
         for epoch in range(epochs):
             self.logger(f"Epoch {epoch+1}/{epochs}:")
@@ -54,11 +53,6 @@ class Trainer:
                 self.logger(f"Model saved to {os.path.join(self.model.dir, 'model.pth')}")
 
                 max_f1 = val_f1
-            elif criterion == F.triplet_margin_loss and val_loss < min_loss:
-                self.model.save()
-                self.logger(f"Model saved to {os.path.join(self.model.dir, 'model.pth')}")
-
-                min_loss = val_loss
 
             self.tracker += (train_loss, train_f1, val_loss, val_f1)
 
@@ -75,24 +69,17 @@ class Trainer:
         loss_meter = Meter()
         f1_meter = Meter()
 
-        miner = TripletMarginMiner(margin=0.2, type_of_triplets='semihard')
 
         for i, (*inputs, targets, modes) in enumerate(data_loader):
             self.logger.tqdm(i + 1, len(data_loader))
 
             logits = self.model(*inputs)
 
-            if criterion == F.triplet_margin_loss:
-                (a, p, n) =  miner(F.normalize(logits), targets)
-
-                loss = criterion(logits[a], logits[p], logits[n], margin=0.2)
-                f1 = np.nan
-            else:
+            if criterion == F.cross_entropy:
                 loss = criterion(logits, targets)
                 f1 = f1_score(logits, targets)
 
             f1_meter(f1, targets.size(0))
-            loss_meter(loss.item(), targets.size(0))
 
             if back_prop:
                 optimizer.zero_grad()

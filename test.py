@@ -29,18 +29,18 @@ torch.backends.cudnn.benchmark = False
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 lr = 0.001
-batch_size = 256
+batch_size = 16
 input_dims = 2
-hidden_dims = 128
-output_dims = 64
-depth = 6
+hidden_dims = 4
+output_dims = 4
+depth = 1
 dropout = 0.3
 mask_mode = 'binomial'
-exp = '1_pretrain-varnam_finetune-bhairavi'
-pretrain_epochs = 100
-finetune_epochs = 40
+exp = 'test'
+pretrain_epochs = 1
+finetune_epochs = 1
 num_classes = 8
-catchup_epochs = 3
+catchup_epochs = 0
 
 params = {
     'num_classes': num_classes,
@@ -56,7 +56,7 @@ params = {
     'train_path': 'dataset/train.pkl',
     'test_path': 'dataset/test.pkl',
     'lr': lr,
-    'pretrain_on': ['carnatic_varnam'],
+    'pretrain_on': ['bhairavi'],
     'finetune_on': ['bhairavi'],
     'pretrain_epochs': pretrain_epochs,
     'finetune_epochs': finetune_epochs,
@@ -76,7 +76,7 @@ def prepare_data(series_list):
         T = seq.shape[0]
         X[i, :T, :] = seq
 
-    return X
+    return X[:1000]
 
 def main():
     pretrain()

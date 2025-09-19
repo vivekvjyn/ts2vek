@@ -1,0 +1,25 @@
+{
+    "num_classes": 8,
+    "batch_size": 16,
+    "exp": "test",
+    "hidden_dims": 4,
+    "output_dims": 4,
+    "depth": 1,
+    "dropout": 0.3,
+    "mask_mode": "binomial",
+    "model_path": "checkpoints/finetuned/test.pth",
+    "input_dims": 2,
+    "train_path": "dataset/train.pkl",
+    "test_path": "dataset/test.pkl",
+    "lr": 0.001,
+    "pretrain_on": [
+        "bhairavi"
+    ],
+    "finetune_on": [
+        "bhairavi"
+    ],
+    "pretrain_epochs": 1,
+    "finetune_epochs": 1,
+    "catchup_epochs": 0,
+    "f1": 0.07646300491367881
+}
