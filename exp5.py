@@ -105,7 +105,8 @@ def pretrain():
         X,
         name=exp,
         n_epochs=pretrain_epochs,
-        verbose=True
+        verbose=True,
+        logger=logger
     )
 
 
