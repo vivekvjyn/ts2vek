@@ -102,7 +102,8 @@ class TS2Vec:
             n_epoch_iters = 0
 
             interrupted = False
-            for batch in train_loader:
+            for i, batch in enumerate(train_loader):
+                logger.tqdm(i + 1, len(train_loader))
                 if n_iters is not None and self.n_iters >= n_iters:
                     interrupted = True
                     break
