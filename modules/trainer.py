@@ -2,7 +2,6 @@ import os
 import numpy as np
 import torch
 import torch.nn.functional as F
-from pytorch_metric_learning.miners import TripletMarginMiner
 from modules.meter import Meter
 from modules.tracker import Tracker
 
